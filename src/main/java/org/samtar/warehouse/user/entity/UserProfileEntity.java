@@ -18,17 +18,17 @@ public class UserProfileEntity {
 
     @NotBlank
     @Size(min = 3,max = 20)
-    @Column(name = "name",nullable = false,length = 20)
+    @Column(nullable = false,length = 20)
     String name;
 
     @NotBlank
     @Size(min = 3,max = 20)
-    @Column(name = "last_name",nullable = false,length = 20)
+    @Column(nullable = false,length = 20)
     String lastName;
 
     @NotBlank
     @Size(min = 10,max = 500)
-    @Column(name = "profile_picture",nullable = false,length = 500)
+    @Column(nullable = false,length = 500)
     String profilePicture;
 
     @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)

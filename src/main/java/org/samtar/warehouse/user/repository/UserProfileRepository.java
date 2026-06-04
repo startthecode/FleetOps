@@ -1,0 +1,8 @@
+package org.samtar.warehouse.user.repository;
+
+
+import org.samtar.warehouse.user.entity.UserProfileEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserProfileRepository extends JpaRepository<UserProfileEntity,Long> {
+}

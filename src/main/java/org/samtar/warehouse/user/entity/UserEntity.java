@@ -18,24 +18,42 @@ public class UserEntity {
 
     @NotBlank
     @Size(min = 5,max = 30)
-    @Column(name = "name",unique = true,nullable = false,length = 30)
+    @Column(unique = true,nullable = false,length = 30)
     String username;
 
     @NotBlank
     @Size(min = 6,max = 50)
-    @Column(name = "email",unique = true,nullable = false,length = 50)
+    @Column(unique = true,nullable = false,length = 50)
     String email;
+    
+    @NotBlank
+    @Size(min = 8,max = 80)
+    @Column(nullable = false,length = 80)
+    String password;
 
-    @NotNull
+    @NotBlank
     @Size(min = 9,max = 12)
-    @Column(name = "phone",unique = true,nullable = false,length = 12)
-    Integer phone;
+    @Column(unique = true,nullable = false,length = 12)
+    String phone;
 
     @Column
     boolean isAccountBlocked = false;
 
-    @Column
-    @Enumerated(value = EnumType.STRING)
+    @NotNull
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     Roles role;
 
+    public UserEntity() {
+    }
+
+    public UserEntity(String email, Long id, boolean isAccountBlocked, String password, String phone, Roles role, String username) {
+        this.email = email;
+        this.id = id;
+        this.isAccountBlocked = isAccountBlocked;
+        this.password = password;
+        this.phone = phone;
+        this.role = role;
+        this.username = username;
+    }
 }
