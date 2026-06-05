@@ -62,7 +62,7 @@ public class JwtFilterChain extends OncePerRequestFilter {
                 throw new Exception("Invalid headers");
             }
 
-            String accessToken = header.substring(6);
+            String accessToken = header.substring(7);
             if (accessToken.isEmpty()) {
                 throw new Exception("Invalid headers");
             }
