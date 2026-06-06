@@ -27,4 +27,8 @@ public record CreateProductReqDto(
         int unit
 
 ) {
+        public CreateProductReqDto{
+                productName = productName.trim();
+                description = description.trim();
+        }
 }

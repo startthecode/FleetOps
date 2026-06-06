@@ -2,16 +2,17 @@ package org.samtar.warehouse.products.controller;
 
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Null;
 import org.samtar.warehouse.common.dto.response.GenericResponseDto;
 import org.samtar.warehouse.products.dto.req.CreateProductReqDto;
+import org.samtar.warehouse.products.dto.req.UpdateProductReqDto;
 import org.samtar.warehouse.products.dto.res.ProductResDto;
 import org.samtar.warehouse.products.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/product")
@@ -22,9 +23,35 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<GenericResponseDto<List<ProductResDto>>> getAllProducts(){
+        GenericResponseDto<List<ProductResDto>> response = new GenericResponseDto<>("Product Created Successfully",true,productService.getAllProducts());
+        return  ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/all/{userid}")
+    public ResponseEntity<GenericResponseDto<List<ProductResDto>>> getAllProducts(@Valid @PathVariable long userid){
+        GenericResponseDto<List<ProductResDto>> response = new GenericResponseDto<>("Product Created Successfully",true,productService.getAllProducts(userid));
+        return  ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<GenericResponseDto<ProductResDto>> createProduct(@Valid @RequestBody CreateProductReqDto payload){
         GenericResponseDto<ProductResDto> response = new GenericResponseDto<>("Product Created Successfully",true,productService.createProduct(payload));
         return  ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PostMapping("/update")
+    public ResponseEntity<GenericResponseDto<ProductResDto>> updateProduct(@Valid @RequestBody UpdateProductReqDto payload){
+        GenericResponseDto<ProductResDto> response = new GenericResponseDto<>("Product Updated Successfully",true,productService.updateProduct(payload));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @DeleteMapping("/delete/{productID}")
+    public ResponseEntity<GenericResponseDto<Null>> deleteProduct(@PathVariable Long productID){
+        productService.deleteProduct(productID);
+        GenericResponseDto<Null> response = new GenericResponseDto<>("Product with ID: " +productID+" Deleted Successfully",true,null);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+    }
+
 }
