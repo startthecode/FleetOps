@@ -1,6 +1,9 @@
 package org.samtar.warehouse.products.service;
 
+import jakarta.transaction.Transactional;
 import org.samtar.warehouse.common.exceptions.ProductException;
+import org.samtar.warehouse.inventory.dto.req.CreateInventoryReqDto;
+import org.samtar.warehouse.inventory.service.InventoryService;
 import org.samtar.warehouse.products.dto.req.CreateProductReqDto;
 import org.samtar.warehouse.products.dto.req.UpdateProductReqDto;
 import org.samtar.warehouse.products.dto.res.ProductResDto;
@@ -20,21 +23,28 @@ public class ProductService {
     ProductRepository productRepository;
     UserRepository userRepository;
     UserSharedService userSharedService;
+    InventoryService inventoryService;
 
-    public ProductService(ProductMapper productMapper, ProductRepository productRepository, UserRepository userRepository, UserSharedService userSharedService) {
+    public ProductService(ProductMapper productMapper,
+                          InventoryService inventoryService,
+                          ProductRepository productRepository, UserRepository userRepository, UserSharedService userSharedService) {
         this.productMapper = productMapper;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.userSharedService = userSharedService;
+        this.inventoryService= inventoryService;
     }
 
+    @Transactional
     public ProductResDto createProduct(CreateProductReqDto payload) {
         boolean isAlreadyExists = productRepository.existsByProductNameIgnoreCase(payload.productName().trim());
         if (isAlreadyExists) throw ProductException.alreadyExists();
         UserEntity currentUser = userSharedService.getCurrentUser();
         ProductEntity newProduct = productMapper.toEntity(payload);
         newProduct.setCreatedBy(userRepository.getReferenceById(currentUser.getId()));
-        return productMapper.toResponse(productRepository.save(newProduct));
+        newProduct = productRepository.save(newProduct);
+        createInventory(newProduct);
+        return productMapper.toResponse(newProduct);
     }
 
     public ProductResDto updateProduct(UpdateProductReqDto payload) {
@@ -63,5 +73,10 @@ public class ProductService {
     public List<ProductResDto> getAllProducts(){
         List<ProductEntity> allProduct =productRepository.findAll();
         return allProduct.stream().map(e->productMapper.toResponse(e)).toList();
+    }
+
+    public boolean createInventory(ProductEntity product){
+        CreateInventoryReqDto data = new CreateInventoryReqDto(true,null,0,0, product.getProductId());
+        return inventoryService.createInventory(data);
     }
 }

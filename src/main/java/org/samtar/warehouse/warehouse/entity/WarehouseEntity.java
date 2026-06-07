@@ -4,12 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.samtar.warehouse.location.entity.CityEntity;
-import org.samtar.warehouse.products.entity.ProductEntity;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 
 @Data
@@ -27,7 +22,7 @@ public class WarehouseEntity {
     String warehouseName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false,name = "city_id")
     CityEntity city;
 
 }

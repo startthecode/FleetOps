@@ -34,15 +34,15 @@ public class WarehouseController {
     }
 
     @DeleteMapping("/delete/{warehouseID}")
-    public ResponseEntity<GenericResponseDto<Null>> deletehouse(@PathVariable Long warehouseID){
+    public ResponseEntity<GenericResponseDto<Null>> deleteWarehouse(@PathVariable Long warehouseID){
         warehouseService.deleteWarehouse(warehouseID);
         GenericResponseDto<Null> response = new GenericResponseDto<>("Warehouse deleted successfully",true,null);
         return  ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<GenericResponseDto<List<WarehouseResDto>>> getAllWarehouse(){
-        GenericResponseDto<List<WarehouseResDto>> response = new GenericResponseDto<>("Warehouse fetched successfully",true,warehouseService.getAllWarehouses());
-        return  ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<GenericResponseDto<List<WarehouseResDto>>> getAllWarehouse(@RequestParam(required = false) Long city){
+        GenericResponseDto<List<WarehouseResDto>> response = new GenericResponseDto<>("Warehouse fetched successfully",true,warehouseService.getAllWarehouses(city));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

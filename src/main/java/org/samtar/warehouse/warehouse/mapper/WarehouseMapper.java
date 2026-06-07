@@ -10,6 +10,4 @@ public interface WarehouseMapper {
     @Mapping(target = "city", source = "city.cityName")
     WarehouseResDto toResponse(WarehouseEntity warehouseEntity);
 
-    @Mapping(target = "city", source = "city.cityName")
-    void forUpdate(WarehouseEntity warehouseEntity);
 }

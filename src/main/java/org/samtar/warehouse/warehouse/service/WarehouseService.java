@@ -56,7 +56,10 @@ public class WarehouseService {
         warehouseRepository.deleteById(warehouseID);
     }
 
-    public List<WarehouseResDto> getAllWarehouses() {
+    public List<WarehouseResDto> getAllWarehouses(Long cityID) {
+        if(cityID != null){
+            return warehouseRepository.findByCity_cityId(cityID).stream().map(e -> warehouseMapper.toResponse(e)).toList();
+        }
         return warehouseRepository.findAll().stream().map(e -> warehouseMapper.toResponse(e)).toList();
     }
 

@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface WarehouseRepository extends JpaRepository<WarehouseEntity, Long> {
     Optional<WarehouseEntity> findByWarehouseNameIgnoreCase(String warehouseName);
     Optional<WarehouseEntity> findByWarehouseId(long warehouseId);
-    List<WarehouseEntity> findByCityEntity_CityId(long cityId);
+    List<WarehouseEntity> findByCity_cityId(Long cityId);
     Boolean existsByWarehouseNameIgnoreCase(String warehouseName);
     Boolean existsByWarehouseId(long warehouseId);
 }

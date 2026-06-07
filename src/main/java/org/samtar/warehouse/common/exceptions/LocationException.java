@@ -13,7 +13,7 @@ public class LocationException extends ExceptionTemplate{
     }
 
     public static LocationException notExists(LocationTree locationTree,long locationID){
-        return new LocationException(locationTree + " is Already Exists with name "+locationID,null,HttpStatus.CONFLICT);
+        return new LocationException(locationTree + " is Not Exists with name "+locationID,null,HttpStatus.CONFLICT);
     }
 
 
