@@ -16,7 +16,7 @@ public record CreateInventoryReqDto(
         if(stock_warehouse == null) stock_warehouse = 0;
         if(stock_vendor == null) stock_vendor = 0;
     }
-    @AssertTrue(message = "self storage or warehouse shoud be available")
+    @AssertTrue(message = "self storage or warehouse should be available")
     public boolean isStorageGiven(){
         return selfStorage != null || warehouseId != null;
     }

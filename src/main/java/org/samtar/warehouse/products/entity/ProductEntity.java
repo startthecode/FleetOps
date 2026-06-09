@@ -7,9 +7,12 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.samtar.warehouse.inventory.entity.InventoryEntity;
 import org.samtar.warehouse.user.entity.UserEntity;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -56,18 +59,7 @@ public class ProductEntity {
     @JoinColumn(name = "created_by")
     UserEntity createdBy;
 
-    public ProductEntity(Double cost, LocalDateTime createdAt, UserEntity createdBy, String description, Double price, Long productId, String productName, int stockQuantity, LocalDateTime updatedAt) {
-        this.cost = cost;
-        this.createdAt = createdAt;
-        this.createdBy = createdBy;
-        this.description = description;
-        this.price = price;
-        this.productId = productId;
-        this.productName = productName;
-        this.stockQuantity = stockQuantity;
-        this.updatedAt = updatedAt;
-    }
+    @OneToMany(mappedBy = "inventories",fetch = FetchType.LAZY)
+    Set<InventoryEntity> inventories= new HashSet<>();
 
-    public ProductEntity() {
-    }
 }

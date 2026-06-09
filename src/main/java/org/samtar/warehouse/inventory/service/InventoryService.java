@@ -53,7 +53,7 @@ public class InventoryService {
         inventoryRepository.save(inventory);
     }
     public InventoryRespDto getInventoryByProduct(Long productID){
-        List<InventoryEntity> inventories = inventoryRepository.findByProduct_ProductId(productID);
+        List<InventoryEntity> inventories = inventoryRepository.findAllByProduct_ProductId(productID);
         List<InventoryItemDto> vendorItems = inventories.stream().filter(e->e.getVendor() != null).map(e-> new InventoryItemDto(e.getVendor().getId(),e.getVendor().getUsername(),e.getStockVendor())).toList();
         InventoriesListDto vendorData = new InventoriesListDto("Vendors",vendorItems);
         List<InventoryItemDto> warehouseItems = inventories.stream().filter(e->e.getWarehouse() != null).map(e-> new InventoryItemDto(e.getWarehouse().getWarehouseId(),e.getWarehouse().getWarehouseName(),e.getStockWarehouse())).toList();
@@ -62,7 +62,7 @@ public class InventoryService {
 
     }
     public void deleteInventory(Long inventoryId,Long productID){
-        List<InventoryEntity> inventories = inventoryRepository.findByProduct_ProductId(productID);
+        List<InventoryEntity> inventories = inventoryRepository.findAllByProduct_ProductId(productID);
         if(inventories.size() == 1) throw InventoryException.lastItemDeleteNotAllowed();
         if(!inventoryRepository.existsByInventoryId(inventoryId)) throw  InventoryException.notExists(inventoryId);
         inventoryRepository.deleteById(inventoryId);

@@ -2,10 +2,14 @@ package org.samtar.warehouse.user.service;
 
 import org.samtar.warehouse.common.dto.JwtClaimsDto;
 import org.samtar.warehouse.common.dto.JwtTokenDto;
+import org.samtar.warehouse.common.enums.LocationTree;
 import org.samtar.warehouse.common.enums.Roles;
 import org.samtar.warehouse.common.enums.TokenTypes;
 import org.samtar.warehouse.common.exceptions.AuthException;
+import org.samtar.warehouse.common.exceptions.LocationException;
 import org.samtar.warehouse.common.utils.JwtUtils;
+import org.samtar.warehouse.location.entity.CityEntity;
+import org.samtar.warehouse.location.repository.CityRepository;
 import org.samtar.warehouse.user.dto.request.CreateUserReqDto;
 import org.samtar.warehouse.user.dto.request.UserSigninReqDto;
 import org.samtar.warehouse.user.dto.response.CreateUserResDto;
@@ -35,22 +39,30 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     JwtUtils jwtUtils;
     AuthenticationManager authenticationManager;
+    CityRepository cityRepository;
 
-    public UserService(AuthenticationManager authenticationManager, JwtUtils jwtUtils, userMapper mapper, PasswordEncoder passwordEncoder, UserProfileRepository userProfileRepository, UserRepository userRepository) {
+    public UserService(AuthenticationManager authenticationManager, CityRepository cityRepository, JwtUtils jwtUtils, userMapper mapper, PasswordEncoder passwordEncoder, UserProfileRepository userProfileRepository, UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
         this.userProfileRepository = userProfileRepository;
         this.userRepository = userRepository;
+        this.cityRepository = cityRepository;
     }
 
-    public CreateUserResDto customerSignUp(CreateUserReqDto payload) {
+    public CreateUserResDto createAccount(CreateUserReqDto payload) {
         UserEntity newCustomer = mapper.toEntity(payload);
         String password = passwordEncoder.encode(payload.password());
         newCustomer.setPassword(password);
-        newCustomer.setRole(Roles.CUSTOMER);
         newCustomer = userRepository.save(newCustomer);
+        if (payload.isVendorAccount()) {
+            CityEntity city = cityRepository.findByCityId(payload.cityID()).orElseThrow(() -> LocationException.notExists(LocationTree.CITY, payload.cityID()));
+            newCustomer.setRole(Roles.VENDOR);
+            newCustomer.setCity(city);
+        } else {
+            newCustomer.setRole(Roles.CUSTOMER);
+        }
         return new CreateUserResDto(newCustomer.getId(), newCustomer.getRole(), getToken(newCustomer));
     }
 
@@ -64,7 +76,7 @@ public class UserService {
             return new UserSigninResDto(user.getId(), user.getRole(), getToken(user));
         } catch (BadCredentialsException badCredentialsException) {
             throw AuthException.InvalidCredentials(null);
-        }catch (DisabledException ex){
+        } catch (DisabledException ex) {
             throw AuthException.accountBlocked();
         }
     }

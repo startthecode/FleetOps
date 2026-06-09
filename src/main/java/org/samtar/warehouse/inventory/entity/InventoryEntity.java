@@ -23,7 +23,7 @@ public class InventoryEntity {
     Long inventoryId;
 
     @NotNull(message = "Stock can not be blank")
-    @Min(value = 0, message = "Stock must be at least 0")
+@Min(value = 0, message = "Stock must be at least 0")
     @Max(value = 1000, message = "Stock cannot exceed 1000")
     @Column(name = "stock_vendor", nullable = false)
     Integer stockVendor;

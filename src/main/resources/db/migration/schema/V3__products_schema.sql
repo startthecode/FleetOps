@@ -1,4 +1,4 @@
--- V2__products_schema.sql
+-- V3__products_schema.sql
 -- Schema for products.
 -- Generated from ProductEntity.
 

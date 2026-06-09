@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.samtar.warehouse.common.enums.Roles;
+import org.samtar.warehouse.location.entity.CityEntity;
+import org.samtar.warehouse.location.entity.StateEntity;
 
 @Data
 @Entity
@@ -43,6 +45,10 @@ public class UserEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     Roles role;
+
+    @ManyToOne
+    @JoinColumn(nullable = true,name = "city")
+    CityEntity city;
 
     public UserEntity() {
     }

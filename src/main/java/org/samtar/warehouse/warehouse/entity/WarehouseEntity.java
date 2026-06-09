@@ -14,7 +14,7 @@ public class WarehouseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "warehouse_id_generator")
     @SequenceGenerator(name = "warehouse_id_generator",sequenceName = "warehouse_id_generator",allocationSize = 10)
-    private long warehouseId;
+    private Long warehouseId;
 
     @NotBlank(message = "Warehouse name can not be blank")
     @Size(max = 60, min = 3, message = "Warehouse name must be between 5 to 60 character")

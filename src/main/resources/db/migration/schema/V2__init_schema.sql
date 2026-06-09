@@ -1,6 +1,7 @@
--- V1__init_schema.sql
--- Initial schema for users and users_profile.
+-- V2__init_schema.sql
+-- Schema for users and users_profile.
 -- Generated from UserEntity / UserProfileEntity.
+-- Runs after V1 locations so users.city can reference cities inline.
 
 -- ── Sequences (allocationSize = 10 -> INCREMENT BY 10) ───────────────────────
 CREATE SEQUENCE user_id_generator
@@ -20,10 +21,12 @@ CREATE TABLE users (
     phone               VARCHAR(12)  NOT NULL,
     is_account_blocked  BOOLEAN      NOT NULL DEFAULT FALSE,
     role                VARCHAR(20)  NOT NULL,
+    city                BIGINT,
     CONSTRAINT pk_users PRIMARY KEY (id),
     CONSTRAINT uq_users_username UNIQUE (username),
     CONSTRAINT uq_users_email UNIQUE (email),
     CONSTRAINT uq_users_phone UNIQUE (phone),
+    CONSTRAINT fk_users_city FOREIGN KEY (city) REFERENCES cities (city_id),
     CONSTRAINT ck_users_role CHECK (role IN
         ('SUPER_ADMIN', 'ADMIN', 'VENDOR', 'WAREHOUSE_MANAGER', 'DRIVER', 'CUSTOMER'))
 );

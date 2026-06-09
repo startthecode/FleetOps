@@ -24,9 +24,9 @@ public class AuthController {
     }
 
     // Cutomer
-    @PostMapping("/customer-signup")
-    public ResponseEntity<GenericResponseDto<CreateUserResDto>> customerSigin(@Valid @RequestBody CreateUserReqDto payload){
-        CreateUserResDto data = userService.customerSignUp(payload);
+    @PostMapping({"/customer-signup","vendor-signup"})
+    public ResponseEntity<GenericResponseDto<CreateUserResDto>> createAccount(@Valid @RequestBody CreateUserReqDto payload){
+        CreateUserResDto data = userService.createAccount(payload);
         GenericResponseDto<CreateUserResDto> response = new GenericResponseDto<>("Account has been created",true,data);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -34,7 +34,7 @@ public class AuthController {
 
     // Generic
     @PostMapping({"/customer-signin","/vendor-signin","/admin-signin"})
-    public ResponseEntity<GenericResponseDto<UserSigninResDto>> genericSigin(@Valid @RequestBody UserSigninReqDto payload){
+    public ResponseEntity<GenericResponseDto<UserSigninResDto>> genericSignin(@Valid @RequestBody UserSigninReqDto payload){
         UserSigninResDto data = userService.userSignIn(payload);
         GenericResponseDto<UserSigninResDto> response = new GenericResponseDto<>("Login successfully",true,data);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

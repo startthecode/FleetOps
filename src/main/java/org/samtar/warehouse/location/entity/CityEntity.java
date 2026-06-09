@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.samtar.warehouse.user.entity.UserEntity;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -22,4 +26,7 @@ public class CityEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "state")
     StateEntity state;
+
+    @OneToMany(mappedBy = "city")
+    Set<UserEntity> users = new HashSet<>();
 }

@@ -1,6 +1,7 @@
--- V3__locations_schema.sql
+-- V1__locations_schema.sql
 -- Schema for location hierarchy: countries -> states -> cities.
 -- Generated from CountryEntity / StateEntity / CityEntity.
+-- Created first so later tables (users.city, warehouse.city) can reference cities.
 
 -- ── Sequences (allocationSize = 10 -> INCREMENT BY 10) ───────────────────────
 CREATE SEQUENCE country_id_generator
