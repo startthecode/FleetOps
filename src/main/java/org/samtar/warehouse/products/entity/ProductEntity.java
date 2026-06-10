@@ -59,7 +59,7 @@ public class ProductEntity {
     @JoinColumn(name = "created_by")
     UserEntity createdBy;
 
-    @OneToMany(mappedBy = "inventories",fetch = FetchType.LAZY)
-    Set<InventoryEntity> inventories= new HashSet<>();
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    Set<InventoryEntity> inventories = new HashSet<>();
 
 }

@@ -1,9 +1,9 @@
 package org.samtar.warehouse.cart.dto.res;
 
-import java.util.Set;
+import java.util.List;
 
 public record CartResDto(
-    Set<CartItemResDto> items
+    List<CartItemResDto> items
 ) {
 
 

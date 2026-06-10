@@ -27,7 +27,7 @@ public class CartService {
     CartMapper cartMapper;
     UserSharedService userSharedService;
     EntityManager entityManager;
-    
+
     public CartService(CartItemsRepository cartItemsRepository,
             CartMapper cartMapper,
             CartRepository cartRepository,
@@ -61,25 +61,27 @@ public class CartService {
             newItem.setQuantity(item.quantity());
             cartItems.add(newItem);
         }
-   
+//
         userCart.setTotalAmount(totalAmount);
-        userCart.getCartItems().clear();
-        entityManager.flush();
+        if(!userCart.getCartItems().isEmpty()){
+            userCart.getCartItems().clear();
+            entityManager.flush();
+        }
         userCart.getCartItems().addAll(cartItems);
-        return cartMapper.toDto(cartRepository.saveAndFlush(userCart));
+        return cartMapper.toDto(cartRepository.save(userCart));
     }
 
     @Transactional
     public CartResDto emptyCart() {
         cartRepository.deleteByUser_id(userSharedService.getCurrentUser().getId());
-        return new CartResDto(new HashSet<>());
+        return new CartResDto(new ArrayList<>());
     }
 
     public CartResDto getCartItems() {
         UserEntity currentUser = userSharedService.getCurrentUser();
         CartEntity userCart = cartRepository.findByUser_id(currentUser.getId()).orElse(null);
         if (userCart == null) {
-            return new CartResDto(new HashSet<>());
+            return new CartResDto(new ArrayList<>());
         } else {
             return cartMapper.toDto(userCart);
         }

@@ -1,8 +1,6 @@
 package org.samtar.warehouse.user.dto.request;
 
 import jakarta.validation.constraints.*;
-import org.samtar.warehouse.common.enums.Roles;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 public record CreateUserReqDto(
         @NotBlank(message = "Username is required")
@@ -28,12 +26,12 @@ public record CreateUserReqDto(
         @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
         String name,
 
-        boolean isVendorAccount,
+        Boolean isVendorAccount,
         Long cityID
 
 ) {
-    @AssertTrue(message = "State defining is mandatory for vendors")
-    public boolean vendorValidation() {
-        return isVendorAccount && (cityID != null);
+    @AssertTrue(message = "City is mandatory for vendors")
+    public boolean isVendorCityValid() {
+        return !Boolean.TRUE.equals(isVendorAccount) || cityID != null;
     }
 }

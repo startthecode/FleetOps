@@ -1,6 +1,8 @@
 package org.samtar.warehouse.orders.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.samtar.warehouse.cart.entity.CartEntity;
@@ -21,8 +23,6 @@ import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 
 @Service
 public class OrderService {
@@ -36,68 +36,77 @@ public class OrderService {
 
     public OrderService(OrderRepository orderRepository, OrderItemsRepository orderItemsRepository,
             UserSharedService userSharedService, ProductRepository productRepository, CartRepository cartRepository,
-            EntityManager entityManager) {
+            EntityManager entityManager,
+                        OrderMapper orderMapper) {
         this.orderRepository = orderRepository;
         this.orderItemsRepository = orderItemsRepository;
         this.userSharedService = userSharedService;
         this.productRepository = productRepository;
         this.cartRepository = cartRepository;
         this.entityManager = entityManager;
+        this.orderMapper = orderMapper;
     }
 
     @Transactional
     public OrderResDto placeAnOrder() {
         UserEntity currentUser = userSharedService.getCurrentUser();
         CartEntity cart = cartRepository.findByUser_id(currentUser.getId()).orElseThrow(OrderException::cartIsEmpty);
-        if (cart.getCartItems().size() == 0) {
+        if (cart.getCartItems().isEmpty()) {
+            throw OrderException.cartIsEmpty();
+        }
+        List<CartItemsEntity> cartItems = new ArrayList<>(cart.getCartItems());
+        if (cartItems.isEmpty()) {
             throw OrderException.cartIsEmpty();
         }
 
         OrderEntity newOrder = new OrderEntity();
-        Double totalAmaunt = 0.0;
+        double totalAmaunt = 0.0;
         newOrder.setOwner(currentUser);
         newOrder.setStatus(OrderStatus.PENDING);
         Set<OrderItemsEntity> orderItems = new HashSet<>();
 
-        // loop
-        for (CartItemsEntity a : cart.getCartItems()) {
+        for (CartItemsEntity a : cartItems) {
             totalAmaunt += a.getPrice() * a.getQuantity();
             OrderItemsEntity orderItem = new OrderItemsEntity(
-                    a.getProduct(),
+                    a.getProduct(),           // Now safe - already initialized
                     a.getQuantity(),
                     a.getPrice(),
                     newOrder);
-                    orderItems.add(orderItem);
-                }
-                newOrder.setTotalAmount(totalAmaunt);
-                newOrder.setOrderItems(orderItems);
-
-        cartRepository.deleteById(cart.getId());
-        return orderMapper.toDto(orderRepository.save(newOrder));
-
+            orderItems.add(orderItem);
+        }
+        newOrder.setTotalAmount(totalAmaunt);
+        newOrder.setOrderItems(orderItems);
+        newOrder.setUserCity(currentUser.getCity());
+        System.out.println("----------+++");
+        System.out.println(newOrder);
+        OrderEntity response = orderRepository.save(newOrder);
+         cartRepository.deleteById(cart.getId());
+        return orderMapper.toDto(response);
     }
 
     @Transactional
-    public OrderResDto cancelOrder(Long orderID){
-        OrderEntity order = orderRepository.findByIdAndStatusNot(orderID,OrderStatus.CANCELLED).orElseThrow(OrderException::orderNotfound);
+    public OrderResDto cancelOrder(Long orderID) {
+        OrderEntity order = orderRepository.findByIdAndStatusNot(orderID, OrderStatus.CANCELLED)
+                .orElseThrow(OrderException::orderNotfound);
         order.setStatus(OrderStatus.CANCELLED);
         return orderMapper.toDto(order);
     }
 
     @Transactional
-     public OrderResDto updateOrderStatus(Long orderID,OrderStatus status){
-        OrderEntity order = orderRepository.findByIdAndStatusNot(orderID,OrderStatus.CANCELLED).orElseThrow(OrderException::orderNotfound);
+    public OrderResDto updateOrderStatus(Long orderID, OrderStatus status) {
+        OrderEntity order = orderRepository.findByIdAndStatusNot(orderID, OrderStatus.CANCELLED)
+                .orElseThrow(OrderException::orderNotfound);
         order.setStatus(status);
         return orderMapper.toDto(order);
     }
 
-    public Set<OrderResDto> getAllOrders(){
+    public Set<OrderResDto> getAllOrders() {
         UserEntity currentUser = userSharedService.getCurrentUser();
         Set<OrderEntity> orders = orderRepository.findByOwner_id(currentUser.getId());
         return orderMapper.toDto(orders);
-    } 
+    }
 
-    public OrderResDto getProductDtl(Long orderID){
+    public OrderResDto getProductDtl(Long orderID) {
         OrderEntity order = orderRepository.findById(orderID).orElseThrow(OrderException::orderNotfound);
         return orderMapper.toDto(order);
     }

@@ -11,4 +11,8 @@ public class CartException extends ExceptionTemplate {
         return new CartException("Your cart is empty",null,HttpStatus.CONFLICT);
     }
 
+    public static CartException invalidCart(String message){
+        return new CartException(message,null,HttpStatus.BAD_REQUEST);
+    }
+
 }

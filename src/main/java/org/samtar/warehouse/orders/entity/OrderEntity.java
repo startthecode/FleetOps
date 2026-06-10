@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.samtar.warehouse.common.enums.OrderStatus;
-import org.samtar.warehouse.location.entity.StateEntity;
+import org.samtar.warehouse.location.entity.CityEntity;
 import org.samtar.warehouse.user.entity.UserEntity;
 
 import jakarta.persistence.*;
@@ -15,8 +15,8 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString(exclude = "orderItems")
-@EqualsAndHashCode(exclude = "orderItems")
+@ToString(exclude = {"orderItems","userCity","owner"})
+@EqualsAndHashCode(exclude = {"orderItems","userCity","owner"})
 @Table(name = "`order`")
 public class OrderEntity {
     @Id
@@ -29,19 +29,19 @@ public class OrderEntity {
     UserEntity owner;
 
     @NotNull(message = "Amount can not be null")
-    @Column(name = "total_amount",nullable = false)
+    @Column(name = "total_amount", nullable = false)
     Double totalAmount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status",nullable = false)
+    @Column(name = "status", nullable = false)
     OrderStatus status = OrderStatus.PENDING;
 
     @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<OrderItemsEntity> orderItems = new HashSet<>();
 
-    @ManyToOne()
-    @JoinColumn(nullable = false, name = "user_state")
-    StateEntity userState;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "user_city")
+    CityEntity userCity;
 
     public OrderEntity(UserEntity owner, @NotNull(message = "Amount can not be null") Double totalAmount,
             OrderStatus status, Set<OrderItemsEntity> orderItems) {
@@ -53,7 +53,5 @@ public class OrderEntity {
 
     public OrderEntity() {
     }
-
-    
 
 }

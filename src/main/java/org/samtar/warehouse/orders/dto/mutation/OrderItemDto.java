@@ -4,5 +4,4 @@ public record OrderItemDto(
         Long productId,
         Integer quantity,
         Double price) {
-
 }

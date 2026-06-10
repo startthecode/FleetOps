@@ -21,8 +21,8 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString(exclude = "cart")
-@EqualsAndHashCode(exclude = "cart")
+@ToString(exclude = { "cart", "product" })
+@EqualsAndHashCode(exclude = { "cart", "product" })
 @Table(name = "cart_items", uniqueConstraints = @UniqueConstraint(columnNames = { "product", "cart" }))
 public class CartItemsEntity {
     @Id

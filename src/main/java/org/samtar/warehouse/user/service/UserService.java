@@ -55,14 +55,14 @@ public class UserService {
         UserEntity newCustomer = mapper.toEntity(payload);
         String password = passwordEncoder.encode(payload.password());
         newCustomer.setPassword(password);
-        newCustomer = userRepository.save(newCustomer);
-        if (payload.isVendorAccount()) {
+        if (Boolean.TRUE.equals(payload.isVendorAccount())) {
             CityEntity city = cityRepository.findByCityId(payload.cityID()).orElseThrow(() -> LocationException.notExists(LocationTree.CITY, payload.cityID()));
             newCustomer.setRole(Roles.VENDOR);
             newCustomer.setCity(city);
         } else {
             newCustomer.setRole(Roles.CUSTOMER);
         }
+        newCustomer = userRepository.save(newCustomer);
         return new CreateUserResDto(newCustomer.getId(), newCustomer.getRole(), getToken(newCustomer));
     }
 

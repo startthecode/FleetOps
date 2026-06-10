@@ -23,13 +23,13 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString(exclude = "userOrder")
-@EqualsAndHashCode(exclude = "userOrder")
+@ToString(exclude = {"userOrder","product"})
+@EqualsAndHashCode(exclude = {"userOrder","product"})
 @Table(name = "order_items",uniqueConstraints = @UniqueConstraint(columnNames = {"user_order", "product"}))
 public class OrderItemsEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_id_generator")
-    @SequenceGenerator(name = "order_id_generator", sequenceName = "order_id_generator", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_item_id_generator")
+    @SequenceGenerator(name = "order_item_id_generator", sequenceName = "order_item_id_generator", allocationSize = 50)
     Long id;
 
     @ManyToOne()

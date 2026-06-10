@@ -1,8 +1,8 @@
 package org.samtar.warehouse.cart.entity;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -53,7 +53,7 @@ public class CartEntity {
     private int totalItems;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<CartItemsEntity> cartItems = new HashSet<>();
+    List<CartItemsEntity> cartItems = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -63,7 +63,7 @@ public class CartEntity {
 
     public CartEntity(Long id, UserEntity user, @NotNull(message = "Total amount can not be blank") double totalAmount,
             @NotNull(message = "Total Items can not be blank") @Min(1) @Max(100) int totalItems,
-            Set<CartItemsEntity> cartItems, LocalDateTime createdAt, LocalDateTime updatedAt) {
+            List<CartItemsEntity> cartItems, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.user = user;
         this.totalAmount = totalAmount;
