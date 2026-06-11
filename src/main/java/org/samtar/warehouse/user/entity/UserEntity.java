@@ -20,6 +20,7 @@ import org.samtar.warehouse.location.entity.StateEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "user_id_generator")

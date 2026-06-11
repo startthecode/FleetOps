@@ -37,4 +37,8 @@ public class AuthException extends ExceptionTemplate {
     public static  AuthException accountBlocked() {
         return new AuthException("Account is blocked",null,HttpStatus.UNAUTHORIZED);
     }
+
+    public static  AuthException unAuthorized() {
+        return new AuthException("You dont have a permission to use this",false,HttpStatus.UNAUTHORIZED);
+    }
 }

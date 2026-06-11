@@ -36,6 +36,8 @@ public class SecurityConfig {
     private final UserDetailImp userDetailImp;
     private final int passwordStrength;
     private final List<String> unprotectedEndpoints = List.of("/api/v1/auth/**",
+                                     "/api/v1/vendor/**",
+                                     "/api/v1/driver/**",
                                      "/api/testing/unprotected");
 
     public SecurityConfig(ObjectMapper mapper, UserDetailImp userDetailImp,

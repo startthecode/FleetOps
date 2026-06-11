@@ -38,7 +38,9 @@ public class JwtFilterChain extends OncePerRequestFilter {
 
     private final List<String> unProtectedRoutes = List.of(
             "/api/v1/auth/**",
-            "/api/testing/**");
+            "/api/testing/**",
+            "/api/v1/vendor/**",
+            "/api/v1/driver/**");
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     public JwtFilterChain(ObjectMapper mapper, UserDetailImp userDetailImp, JwtUtils jwtUtils) {
@@ -91,10 +93,10 @@ public class JwtFilterChain extends OncePerRequestFilter {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         if (exception instanceof AuthException) {
-            GenericResponseDto<Null> res = new GenericResponseDto<>(exception.getMessage(),false ,null);
+            GenericResponseDto<Null> res = new GenericResponseDto<>(exception.getMessage(), false, null);
             mapper.writeValue(response.getWriter(), res);
         } else {
-            GenericResponseDto<Null> res = new GenericResponseDto<>( "Something went wrong", true,null);
+            GenericResponseDto<Null> res = new GenericResponseDto<>("Something went wrong", true, null);
             mapper.writeValue(response.getWriter(), res);
         }
     }
