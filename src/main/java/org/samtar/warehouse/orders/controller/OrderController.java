@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/order")
@@ -48,15 +50,16 @@ public class OrderController {
     }
 
     @PostMapping("/update-status/{orderid}")
-    ResponseEntity<GenericResponseDto<OrderResDto>> updateOrder(@Valid OrderStatus orderStatus,
+    public ResponseEntity<GenericResponseDto<OrderResDto>> updateOrder(@Valid @RequestBody Map<String, String> request,
             @Valid @PathVariable(required = true) Long orderid) {
+        OrderStatus status = OrderStatus.valueOf(request.get("status").toUpperCase());
         GenericResponseDto<OrderResDto> response = new GenericResponseDto<>("Order status Successfully placed", true,
-                orderService.updateOrderStatus(orderid, orderStatus));
+                orderService.updateOrderStatus(orderid, status));
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/cancel-order")
-    ResponseEntity<GenericResponseDto<OrderResDto>> updateOrder(@Valid @PathVariable(required = true) Long orderid) {
+    @DeleteMapping("/cancel-order/{orderid}")
+    public ResponseEntity<GenericResponseDto<OrderResDto>> cancelOrder(@Valid @PathVariable(required = true) Long orderid) {
         GenericResponseDto<OrderResDto> response = new GenericResponseDto<>("Order canceled ", true,
                 orderService.cancelOrder(orderid));
         return ResponseEntity.ok(response);

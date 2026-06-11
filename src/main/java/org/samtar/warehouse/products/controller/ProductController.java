@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Null;
 import org.samtar.warehouse.common.dto.response.GenericResponseDto;
 import org.samtar.warehouse.products.dto.req.CreateProductReqDto;
 import org.samtar.warehouse.products.dto.req.UpdateProductReqDto;
+import org.samtar.warehouse.products.dto.res.ProductPaginatedResDto;
 import org.samtar.warehouse.products.dto.res.ProductResDto;
 import org.samtar.warehouse.products.service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -24,14 +25,27 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<GenericResponseDto<List<ProductResDto>>> getAllProducts(){
-        GenericResponseDto<List<ProductResDto>> response = new GenericResponseDto<>("Product Created Successfully",true,productService.getAllProducts());
+    public ResponseEntity<GenericResponseDto<ProductPaginatedResDto>> getAllProducts(
+        @RequestParam(defaultValue = "0") Integer page,
+        @RequestParam(defaultValue = "10") Integer size,
+        @RequestParam(defaultValue = "asc") String ord,
+        @RequestParam(defaultValue = "productId") String sortBy,
+        @RequestParam(defaultValue = "") String keyword
+    
+    ){
+        GenericResponseDto<ProductPaginatedResDto> response = new GenericResponseDto<>("Product Created Successfully",true,productService.getAllProducts(
+            page,size,ord,sortBy,keyword
+        ));
         return  ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/all/{userid}")
-    public ResponseEntity<GenericResponseDto<List<ProductResDto>>> getAllProducts(@Valid @PathVariable long userid){
-        GenericResponseDto<List<ProductResDto>> response = new GenericResponseDto<>("Product Created Successfully",true,productService.getAllProducts(userid));
+    public ResponseEntity<GenericResponseDto<List<ProductResDto>>> getAllProducts(@Valid @PathVariable long userid, 
+        @RequestParam(defaultValue = "0") Integer page,
+        @RequestParam(defaultValue = "10") Integer size,
+        @RequestParam(defaultValue = "asc") String ord,
+        @RequestParam(defaultValue = "productId") String sortBy){
+        GenericResponseDto<List<ProductResDto>> response = new GenericResponseDto<>("Product Created Successfully",true,productService.getAllProducts(userid,page,size,ord,sortBy));
         return  ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

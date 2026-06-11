@@ -63,7 +63,7 @@ public class OrderService {
         double totalAmaunt = 0.0;
         newOrder.setOwner(currentUser);
         newOrder.setStatus(OrderStatus.PENDING);
-        Set<OrderItemsEntity> orderItems = new HashSet<>();
+        List<OrderItemsEntity> orderItems = new ArrayList<>();
 
         for (CartItemsEntity a : cartItems) {
             totalAmaunt += a.getPrice() * a.getQuantity();

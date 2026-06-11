@@ -4,12 +4,20 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import org.samtar.warehouse.products.entity.ProductEntity;
 import org.samtar.warehouse.user.entity.UserEntity;
 import org.samtar.warehouse.warehouse.entity.WarehouseEntity;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "inventory",uniqueConstraints = @UniqueConstraint(
         columnNames = {"vendor" ,
@@ -47,14 +55,5 @@ public class InventoryEntity {
     @JoinColumn(name = "product",nullable = false)
     ProductEntity product;
 
-    public InventoryEntity() {
-    }
-
-    public InventoryEntity(ProductEntity product, Integer stockVendor, Integer stockWarehouse, UserEntity vendor, WarehouseEntity warehouse) {
-        this.product = product;
-        this.stockVendor = stockVendor;
-        this.stockWarehouse = stockWarehouse;
-        this.vendor = vendor;
-        this.warehouse = warehouse;
-    }
+   
 }

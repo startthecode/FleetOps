@@ -6,6 +6,7 @@ import org.samtar.warehouse.inventory.dto.req.CreateInventoryReqDto;
 import org.samtar.warehouse.inventory.service.InventoryService;
 import org.samtar.warehouse.products.dto.req.CreateProductReqDto;
 import org.samtar.warehouse.products.dto.req.UpdateProductReqDto;
+import org.samtar.warehouse.products.dto.res.ProductPaginatedResDto;
 import org.samtar.warehouse.products.dto.res.ProductResDto;
 import org.samtar.warehouse.products.entity.ProductEntity;
 import org.samtar.warehouse.products.mapper.ProductMapper;
@@ -13,6 +14,11 @@ import org.samtar.warehouse.products.repository.ProductRepository;
 import org.samtar.warehouse.shared.services.UserSharedService;
 import org.samtar.warehouse.user.entity.UserEntity;
 import org.samtar.warehouse.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,15 +71,38 @@ public class ProductService {
         productRepository.deleteById(productID);
     }
 
-    public List<ProductResDto> getAllProducts(Long userID){
-            List<ProductEntity> allProduct = productRepository.findAllByCreatedBy_id(userID);
+    public List<ProductResDto> getAllProducts(Long userID,Integer page,Integer size,String ord,String sortBy){
+            Pageable pagination = PageRequest.of(page, size,Sort.by("productId").descending()); 
+            List<ProductEntity> allProduct = productRepository.findAllByCreatedBy_id(userID,pagination);
             return allProduct.stream().map(e->productMapper.toResponse(e)).toList();
             }
 
-    public List<ProductResDto> getAllProducts(){
-        List<ProductEntity> allProduct =productRepository.findAll();
-        return allProduct.stream().map(e->productMapper.toResponse(e)).toList();
+    public ProductPaginatedResDto getAllProducts(Integer page,Integer size,String ord,String sortBy,String keyword){
+      Pageable pagination = PageRequest.of(page, size,Sort.by("productId").descending()); 
+        Page<ProductEntity> allProduct = productRepository.findAll(search(keyword),pagination);
+        return new ProductPaginatedResDto(
+productMapper.toResponse(allProduct.getContent()),
+allProduct.getTotalPages(),
+allProduct.getNumber(),
+size,
+allProduct.getNumber() * allProduct.getSize());
     }
+
+
+    public static Specification<ProductEntity> search(String keyword) {
+
+    return (root, query, cb) ->
+            cb.or(
+                    cb.like(
+                            cb.lower(root.get("productName")),
+                            "%" + keyword.toLowerCase() + "%"
+                    ),
+                    cb.like(
+                            cb.lower(root.get("description")),
+                            "%" + keyword.toLowerCase() + "%"
+                    )
+            );
+}
 
     public boolean createInventory(ProductEntity product){
         CreateInventoryReqDto data = new CreateInventoryReqDto(true,null,0,0, product.getProductId());

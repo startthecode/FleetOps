@@ -1,6 +1,8 @@
 package org.samtar.warehouse.orders.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.samtar.warehouse.common.enums.OrderStatus;
@@ -9,11 +11,17 @@ import org.samtar.warehouse.user.entity.UserEntity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
+import lombok.EqualsAndHashCode;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @ToString(exclude = {"orderItems","userCity","owner"})
 @EqualsAndHashCode(exclude = {"orderItems","userCity","owner"})
@@ -37,21 +45,12 @@ public class OrderEntity {
     OrderStatus status = OrderStatus.PENDING;
 
     @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<OrderItemsEntity> orderItems = new HashSet<>();
+    List<OrderItemsEntity> orderItems = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_city")
     CityEntity userCity;
 
-    public OrderEntity(UserEntity owner, @NotNull(message = "Amount can not be null") Double totalAmount,
-            OrderStatus status, Set<OrderItemsEntity> orderItems) {
-        this.owner = owner;
-        this.totalAmount = totalAmount;
-        this.status = status;
-        this.orderItems = orderItems;
-    }
-
-    public OrderEntity() {
-    }
+ 
 
 }

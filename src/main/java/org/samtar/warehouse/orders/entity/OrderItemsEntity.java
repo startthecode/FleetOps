@@ -15,13 +15,18 @@ import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
-
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @ToString(exclude = {"userOrder","product"})
 @EqualsAndHashCode(exclude = {"userOrder","product"})
@@ -60,6 +65,4 @@ public class OrderItemsEntity {
         this.userOrder = userOrder;
     }
 
-    public OrderItemsEntity() {
-    }
 }

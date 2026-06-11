@@ -22,14 +22,20 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@ToString(exclude = "cartItems")
-@EqualsAndHashCode(exclude = "cartItems")
+@ToString(exclude = {"cartItems","user"})
+@EqualsAndHashCode(exclude = {"cartItems","user"})
 @Table(name = "cart")
 public class CartEntity {
 
@@ -61,19 +67,5 @@ public class CartEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public CartEntity(Long id, UserEntity user, @NotNull(message = "Total amount can not be blank") double totalAmount,
-            @NotNull(message = "Total Items can not be blank") @Min(1) @Max(100) int totalItems,
-            List<CartItemsEntity> cartItems, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.user = user;
-        this.totalAmount = totalAmount;
-        this.totalItems = totalItems;
-        this.cartItems = cartItems;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-    public CartEntity() {
-    }
 
 }

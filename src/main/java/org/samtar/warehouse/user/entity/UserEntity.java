@@ -4,12 +4,20 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import org.samtar.warehouse.common.enums.Roles;
 import org.samtar.warehouse.location.entity.CityEntity;
 import org.samtar.warehouse.location.entity.StateEntity;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class UserEntity {
@@ -50,16 +58,5 @@ public class UserEntity {
     @JoinColumn(nullable = true,name = "city")
     CityEntity city;
 
-    public UserEntity() {
-    }
 
-    public UserEntity(String email, Long id, boolean isAccountBlocked, String password, String phone, Roles role, String username) {
-        this.email = email;
-        this.id = id;
-        this.isAccountBlocked = isAccountBlocked;
-        this.password = password;
-        this.phone = phone;
-        this.role = role;
-        this.username = username;
-    }
 }
